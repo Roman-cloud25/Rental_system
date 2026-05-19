@@ -6,6 +6,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from django.db import models
+from django.db.models import Count, Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from .models import Property
@@ -39,11 +40,16 @@ class PropertyListCreateView(generics.ListCreateAPIView):
 
     # Filtration class
     filterset_class = PropertyFilter
-    search_fields = ['title', 'description']
+    search_fields = [
+        'title',
+        'description',
+        'location__name']
+
     ordering_fields = [
         'price',
         'created_at',
         'views_count',
+        'reviews_count',
     ]
     ordering = ['-created_at']
 
@@ -51,7 +57,7 @@ class PropertyListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.annotate(
-            reviews_count=models.Count('reviews')
+            reviews_count=models.Count('reviews'),
         )
         return queryset
 
@@ -87,6 +93,9 @@ class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.increment_views()
+        if request.user.is_authenticated:
+            from analytics.models import ViewHistory
+            ViewHistory.record_view(request.user, instance)
 
         # ViewHistory.objects.create(listing=instance, user=request.user if request.user.is_authenticated else None)
         serializer = self.get_serializer(instance)

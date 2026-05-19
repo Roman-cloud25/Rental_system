@@ -134,6 +134,13 @@ class Property(models.Model):
         blank=True,
         verbose_name='Deletion date')
 
+    # Average rating
+    avg_rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        default=0.0,
+        verbose_name='Average rating')
+
     class Meta:
         db_table = 'properties'
         verbose_name = 'Announcement'

@@ -22,6 +22,32 @@ services:
       timeout: 10s
       retries: 5
 
+  # Django web application
+  web:
+    build: .
+    container_name: rental_django
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: ${DEBUG}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - ./backups:/backups
+      - ./logs:/app/logs
+    networks:
+      - rental_network
+    command: python manage.py runserver 0.0.0.0:8000
+
   # phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

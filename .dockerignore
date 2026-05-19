@@ -1,0 +1,63 @@
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+
+# Python files
+__pycache__/
+*.py[cod]
+*.so
+*.pyo
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite3
+debug.log
+
+# Backups
+backups/
+*.sql.gz
+
+# IDE and version control system files
+.git/
+.gitignore
+.gitattributes
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation and temporary files
+README.md
+*.md
+Dockerfile
+.dockerignore
+docker-compose*.yml
+.env.example
+*.txt
+!requirements.txt
+
+# Test data generator
+#generate_test_data.py
+#load_initial_data.py
+
+# Statics and media
+static/
+staticfiles/
+media/
+
+# Django cache and pytest
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Files created on startup
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# OS temporary files
+.DS_Store
+Thumbs.db

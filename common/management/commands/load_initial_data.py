@@ -23,6 +23,11 @@ class Command(BaseCommand):
             'Münster', 'Magdeburg', 'Potsdam', 'Saarbrücken'
         ]
 
+        for city_name in cities:
+            obj, created = City.objects.get_or_create(name=city_name)
+            if created:
+                self.stdout.write(f'   + Added city: {city_name}')
+
         self.stdout.write('\n Loading housing')
 
         property_types = [

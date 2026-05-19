@@ -18,14 +18,15 @@ class PropertySerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'location', 'city_name',
             'address', 'price', 'rooms', 'property_type', 'property_type_name',
             'available_from', 'min_rental_period', 'images',
-            'owner', 'owner_name', 'status', 'created_at', 'updated_at', 'views_count'
+            'owner', 'owner_name', 'status', 'created_at', 'updated_at', 'views_count', 'avg_rating'
         ]
-        read_only_fields = ['id', 'owner', 'created_at', 'updated_at', 'views_count', 'city_name', 'property_type_name', 'owner_name']
+        read_only_fields = ['id', 'owner', 'created_at', 'updated_at', 'views_count', 'city_name',
+                            'property_type_name', 'owner_name', 'avg_rating']
 
     # Validate price
     def validate_price(self, value):
         if value <= 0:
-            raise serializers.ValidationError("Price must be adove 0")
+            raise serializers.ValidationError("Price must be above 0")
         return value
 
     # Validate number of rooms
@@ -33,6 +34,7 @@ class PropertySerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("Rooms must be greater than 0")
         return value
+
 
 # Compact serializer used in property listings
 class PropertyListSerializer(serializers.ModelSerializer):
@@ -43,5 +45,5 @@ class PropertyListSerializer(serializers.ModelSerializer):
         model = Property
         fields = [
             'id', 'title', 'city_name', 'address', 'price', 'rooms', 'property_type_name', 'status',
-            'created_at', 'views_count'
+            'created_at', 'views_count', 'avg_rating'
         ]

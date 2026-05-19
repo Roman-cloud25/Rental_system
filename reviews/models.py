@@ -8,6 +8,9 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from properties.models import Property
 from bookings.models import Booking
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.db.models import Avg
 
 
 # Review for listing
@@ -79,3 +82,13 @@ class Review(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
+
+# # Update listing's average rating on review create/update/delete
+@receiver(post_save, sender=Review)
+@receiver(post_delete, sender=Review)
+def update_listing_rating(sender, instance, **kwargs):
+    listing = instance.listing
+    avg_rating = listing.reviews.aggregate(Avg('rating'))['rating__avg']
+    listing.avg_rating = round(avg_rating, 2) if avg_rating else 0.0
+    listing.save(update_fields=['avg_rating'])

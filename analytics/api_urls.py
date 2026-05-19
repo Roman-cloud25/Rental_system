@@ -13,4 +13,7 @@ urlpatterns = [
 
     # List og popular properties
     path('popular-listings/', api_views.PopularListingsView.as_view(), name='popular-listings'),
+
+    # Landlord statistics (views, bookings, reviews, rating)
+    path('my-stats/', api_views.LandlordStatsView.as_view(), name='landlord-stats'),
 ]

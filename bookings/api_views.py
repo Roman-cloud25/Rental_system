@@ -50,8 +50,6 @@ class BookingListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         if not user.is_tenant:
             raise PermissionDenied("Only tenants can create bookings.")
-        serializer.save()
-
         listing = serializer.validated_data.get('listing')
         if listing.owner == user:
             raise PermissionDenied("You cannot book your own property.")

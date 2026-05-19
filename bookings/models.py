@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from properties.models import Property
+from datetime import datetime, timedelta
 
 
 # Booking
@@ -131,12 +132,19 @@ class Booking(models.Model):
 
     # Booking cancellation
     def cancel(self):
-        if self.status in ['pending', 'confirmed']:
-            # We verify that at least 24 hours remain before check-in
-            if self.start_date > timezone.now().date():
-                self.status = 'cancelled'
-                self.save(update_fields=['status'])
-                return True
-            else:
-                raise ValidationError('Cannot cancel less than 24 hours before check-in.')
-        return False
+        if self.status not in ['pending', 'confirmed']:
+            return False
+
+        now = timezone.now()
+        # Check-in start datetime
+        start_datetime = datetime.combine(self.start_date, datetime.min.time())
+        # Start_datetime timezone-aware
+        start_datetime = timezone.make_aware(start_datetime)
+
+        # Allow cancellation if now + 24h <= check-in start.
+        if now + timedelta(hours=24) <= start_datetime:
+            self.status = 'cancelled'
+            self.save(update_fields=['status'])
+            return True
+        else:
+            raise ValidationError('Cancellation is only possible at least 24 hours before check-in.')

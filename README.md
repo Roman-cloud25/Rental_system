@@ -61,17 +61,22 @@ Open in browser:
 ## Project structure
 
 ```
-rental-system/
-├── users/          # Auth and user profiles
-├── properties/     # Listings (CRUD, search, filters)
-├── bookings/       # Booking system
-├── reviews/        # Reviews and ratings
-├── analytics/      # Search and view history
-├── common/         # Cities list, shared models
-├── rental/         # Django settings and URLs
+Project/
+├── rental/                 # Django project settings, URLs, WSGI
+│   ├── settings.py
+│   └── urls.py
+├── users/                  # User model, registration, login, profile, password change
+├── properties/             # Listings: CRUD, filters, search, soft delete
+├── bookings/               # Bookings: create, confirm, reject, cancel
+├── reviews/                # Reviews and ratings
+├── analytics/              # Search history, view history, landlord stats
+├── common/                 # Cities model, initial data loader
+├── generate_test_data.py   # Faker: generates 20 German rental listings
+├── Dockerfile
 ├── docker-compose.yml
-├── requirements.txt
-└── .env.example
+├── entrypoint.sh           # Container startup: migrate + load data + run server
+├── backup.sh               # MySQL backup script (runs via cron)
+└── requirements.txt
 ```
 
 ---
